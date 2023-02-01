@@ -1,0 +1,35 @@
+#!/bin/sh
+
+IDIR=$1
+ODIR=$2
+IDIR=`echo $IDIR | sed 's:/*$::'`
+IDIR=`realpath $IDIR`
+ODIR=`echo $ODIR | sed 's:/*$::'`
+ODIR=`realpath $ODIR`
+INDD=`echo $IDIR | tail -c12`
+ID=`echo $IDIR | tail -c8`
+H=`echo $ID | tail -c2`
+
+SLCE=$IDIR'/'$ID'_reslice.nii.gz'
+HEMI=$IDIR'/'$ID'_hemisphere_seg.nii.gz'
+VENT=$IDIR'/'$ID'_ventricle_seg.nii.gz'
+DOTS=$IDIR'/'$ID'_cortexdots_final.nii.gz'
+PRNT=$ODIR'/tex/'$ID'_print_template_nocuts'
+MOLD1=$ODIR'/'$ID'_hemi_mold.nii.gz'
+MOLD2=$ODIR'/'$ID'_hemi_mold.stl'
+
+brainmold -s $ID \
+ 	  -i $SLCE $HEMI \
+ 	  -o $ODIR \
+	  -h $H \
+	  -C \
+ 	  -d $DOTS \
+
+vtklevelset $MOLD1 $MOLD2 0.0
+
+slab_postproc -d $ODIR -i $ID
+
+pushd $ODIR/'tex'
+pdflatex $PRNT'.tex'
+cp $PRNT'.pdf' ../../
+popd
