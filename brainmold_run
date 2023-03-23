@@ -1,5 +1,11 @@
 #!/bin/bash
 
+
+if [ "$#" -ne 3 ]; then
+    echo "USAGE: brainmold_run INPUT_DIR OUTPUT_DIR INDD*******"
+    exit
+fi
+
 IDIR=$1
 ODIR=$2 
 INDD=$3
@@ -18,12 +24,12 @@ PRNT=$ODIR'/tex/'$ID'_print_template_nocuts'
 MOLD1=$ODIR'/'$ID'_hemi_mold.nii.gz'
 MOLD2=$ODIR'/'$ID'_hemi_mold.stl'
 
-brainmold -s $ID \
- 	  -i $SLCE $HEMI \
- 	  -o $ODIR \
-	  -h $H \
-	  -C \
- 	  -d $DOTS
+# brainmold -s $ID \
+#  	  -i $SLCE $HEMI \
+#  	  -o $ODIR \
+# 	  -h $H \
+# 	  -C \
+#  	  -d $DOTS
 
 vtklevelset $MOLD1 $MOLD2 0.0
 
